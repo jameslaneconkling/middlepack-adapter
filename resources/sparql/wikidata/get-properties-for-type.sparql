@@ -1,0 +1,17 @@
+-- get all properties for type, including superclasses of type
+-- Endpoint: http://query.wikidata.org/sparql
+
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wikibase: <http://wikiba.se/ontology#>
+PREFIX bd: <http://www.bigdata.com/rdf#>
+
+
+SELECT ?property ?propertyLabel
+WHERE {
+   ?type (wdt:P279)* ?class . 
+   ?class wdt:P1963 ?property .
+
+   SERVICE wikibase:label {
+     bd:serviceParam wikibase:language "en" .
+   }
+ }
