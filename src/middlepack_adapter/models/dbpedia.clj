@@ -1,4 +1,4 @@
-(ns middlepack-adapter.routes.dbpedia
+(ns middlepack-adapter.models.dbpedia
   (:require [yesparql.core :refer [defquery]]
             [middlepack-adapter.utils :refer [format-types-response
                                                format-properties-response]]))

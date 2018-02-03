@@ -1,6 +1,6 @@
 (ns middlepack-adapter.core
-  (:require [middlepack-adapter.routes.dbpedia :as dbpedia]
-            [middlepack-adapter.routes.wikidata :as wikidata])
+  (:require [middlepack-adapter.models.dbpedia :as dbpedia] 
+            [middlepack-adapter.models.wikidata :as wikidata])
   (:gen-class))
 
 
