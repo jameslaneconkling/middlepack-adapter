@@ -1,7 +1,12 @@
 (ns middlepack-adapter.core
+  (:require [:middlepack-adapter.routes.dbpedia :refer [get-dbpedia-types
+                                                        #_get-wikidata-types]])
   (:gen-class))
 
+
+(defn printVec [vec]
+  (doseq [item vec] (println item)))
+
 (defn -main
-  "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (doseq [result (get-dbpedia-types 20)] (println result)))
