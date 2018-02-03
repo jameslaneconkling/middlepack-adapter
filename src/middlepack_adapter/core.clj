@@ -1,6 +1,6 @@
 (ns middlepack-adapter.core
-  (:require [:middlepack-adapter.routes.dbpedia :refer [get-dbpedia-types
-                                                        #_get-wikidata-types]])
+  (:require [middlepack-adapter.routes.dbpedia :as dbpedia]
+            [middlepack-adapter.routes.wikidata :as wikidata])
   (:gen-class))
 
 
@@ -9,4 +9,4 @@
 
 (defn -main
   [& args]
-  (doseq [result (get-dbpedia-types 20)] (println result)))
+  (printVec (wikidata/get-static-types)))
