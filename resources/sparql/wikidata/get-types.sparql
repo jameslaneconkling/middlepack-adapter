@@ -8,7 +8,9 @@ PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX bd: <http://www.bigdata.com/rdf#>
 
-SELECT ?class ?classLabel WHERE {
+SELECT ?class ?classLabel
+WHERE {
   ?class wdt:P279 wd:Q35120 .
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }
+LIMIT 10

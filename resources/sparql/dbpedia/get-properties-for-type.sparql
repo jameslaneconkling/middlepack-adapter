@@ -7,3 +7,4 @@ WHERE {
     ?property rdfs:label ?propertyLabel .
     FILTER ( LANG(?propertyLabel) = "en" )
 }
+LIMIT 10 

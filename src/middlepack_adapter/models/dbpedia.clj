@@ -14,7 +14,7 @@
 (defn get-types [limit]
   (with-open [result (get-types-query
                       {:limit limit})]
-    (format-properties-response result)))
+    (format-types-response result)))
 
 (defn get-static-types []
   [{ :class "http://dbpedia.org/ontology/Organisation" :label "organization"}
@@ -29,3 +29,5 @@
                       {:limit limit
                        :bindings {:type (java.net.URI. type)}})]
     (format-properties-response result)))
+
+(get-types 10)
