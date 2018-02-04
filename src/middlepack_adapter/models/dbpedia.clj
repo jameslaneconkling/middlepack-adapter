@@ -29,5 +29,3 @@
                       {:limit limit
                        :bindings {:type (java.net.URI. type)}})]
     (format-properties-response result)))
-
-(get-types 10)
