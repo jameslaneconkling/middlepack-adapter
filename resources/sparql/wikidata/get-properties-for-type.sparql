@@ -1,6 +1,3 @@
--- get all properties for type, including superclasses of type
--- Endpoint: http://query.wikidata.org/sparql
-
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
 PREFIX bd: <http://www.bigdata.com/rdf#>

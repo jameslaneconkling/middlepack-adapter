@@ -1,8 +1,3 @@
--- get types from wikidata [search for subclass of Entity]
--- see [List of Properties](https://www.wikidata.org/wiki/Wikidata:List_of_properties/all) for list of common classes, their properties, and property domain/ranges
--- NOTE: using (wdt:P279)* [subclass] times out
--- Endpoint: https://query.wikidata.org/sparql
-
 PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX wdt: <http://www.wikidata.org/prop/direct/>
 PREFIX wikibase: <http://wikiba.se/ontology#>
