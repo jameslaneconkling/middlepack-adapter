@@ -14,12 +14,7 @@
            (sparql-repo "http://dbpedia.org/sparql"))
   :stop (do
           (println "shut down dbpedia repository")
-          (shutdown dbpedia-repo)
-          dbpedia-repo))
-
-(defn isInitialized?
-  [repo]
-  (.isInitialized repo))
+          (shutdown dbpedia-repo)))
 
 ;; see [Ontology Classes](http://mappings.dbpedia.org/server/ontology/classes/)
 ;; for list of classes, properties, and property domains/ranges
