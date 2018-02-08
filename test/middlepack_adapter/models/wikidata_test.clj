@@ -13,7 +13,6 @@
            #(= (set (keys %)) #{:property :label})
            response))
 
-                                        ; specifying limit does not work. see github issue:  https://github.com/joelkuiper/yesparql/issues/5
       #_(is (= (count response) 5))))
 
   (testing "wikidata get-types"
@@ -22,5 +21,4 @@
            #(= (set (keys %)) #{:class :label})
            response))
 
-                                        ; specifying limit does not work. see github issue:  https://github.com/joelkuiper/yesparql/issues/5
       #_(is (= (count response) 5)))))
