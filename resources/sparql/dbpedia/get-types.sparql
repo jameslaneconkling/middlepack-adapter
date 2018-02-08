@@ -6,4 +6,4 @@ WHERE {
     ?class rdfs:label ?classLabel .
     FILTER ( LANG(?classLabel) = "en" )
 }
-LIMIT 10
+LIMIT ?limit

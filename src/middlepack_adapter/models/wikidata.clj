@@ -2,7 +2,7 @@
   (:require [mount.core :refer [defstate]]
             [grafter.rdf.repository :refer [sparql-repo
                                             shutdown]]
-            [grafter.rdf.sparql :refer [query]]
+            [grafter.rdf.sparql :as sparql :refer [query]]
             [middlepack-adapter.utils :refer [format-types-response
                                               format-properties-response]])
   (:import [java.net URI]))
@@ -23,7 +23,7 @@
 (defn get-types
   [limit]
   (let [response (query "sparql/wikidata/get-types.sparql"
-                        {:limits limit}
+                        {::sparql/limits {:limit limit}}
                         wikidata-repo)]
     (format-types-response response)))
 
@@ -40,11 +40,7 @@
 (defn get-properties-for-type
   [type limit]
   (let [response (query "sparql/wikidata/get-properties-for-type.sparql"
-                        {:limits limit
+                        {::sparql/limits {:limit limit}
                          :type (URI. type)}
                         wikidata-repo)]
     (format-properties-response response)))
-
-#_(count (get-properties-for-type
-          (:class (first (get-static-types)))
-          5))

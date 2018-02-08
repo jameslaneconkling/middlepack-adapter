@@ -14,7 +14,7 @@
            #(= (set (keys %)) #{:class :label})
            response))
 
-      #_(is (= (count response) 5))))
+      (is (= (count response) 5))))
 
   (testing "wikidata get-properties"
     (let [response (wikidata/get-properties-for-type
@@ -24,4 +24,4 @@
            #(= (set (keys %)) #{:property :label})
            response))
 
-      #_(is (= (count response) 5)))))
+      (is (= (count response) 5)))))
