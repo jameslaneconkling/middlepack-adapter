@@ -1,9 +1,20 @@
 (ns middlepack-adapter.models.wikidata
-  (:require [grafter.rdf.repository :refer [sparql-repo]]
+  (:require [mount.core :refer [defstate]]
+            [grafter.rdf.repository :refer [sparql-repo
+                                            shutdown]]
             [grafter.rdf.sparql :refer [query]]
             [middlepack-adapter.utils :refer [format-types-response
                                               format-properties-response]])
   (:import [java.net URI]))
+
+
+(defstate wikidata-repo
+  :start (do
+           (println "initialize wikidata repository")
+           (sparql-repo "https://query.wikidata.org/sparql"))
+  :stop (do
+          (println "shut down wikidata repository")
+          (shutdown wikidata-repo)))
 
 
 ;; see [List of Properties](https://www.wikidata.org/wiki/Wikidata:List_of_properties/all)
@@ -13,7 +24,7 @@
   [limit]
   (let [response (query "sparql/wikidata/get-types.sparql"
                         {:limits limit}
-                        (sparql-repo "https://query.wikidata.org/sparql"))]
+                        wikidata-repo)]
     (format-types-response response)))
 
 
@@ -31,9 +42,9 @@
   (let [response (query "sparql/wikidata/get-properties-for-type.sparql"
                         {:limits limit
                          :type (URI. type)}
-                        (sparql-repo "https://query.wikidata.org/sparql"))]
+                        wikidata-repo)]
     (format-properties-response response)))
 
-(count (get-properties-for-type
-        (:class (first (get-static-types)))
-        5))
+#_(count (get-properties-for-type
+          (:class (first (get-static-types)))
+          5))

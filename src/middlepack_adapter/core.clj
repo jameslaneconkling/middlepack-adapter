@@ -1,5 +1,6 @@
 (ns middlepack-adapter.core
-  (:require [middlepack-adapter.models.dbpedia :as dbpedia] 
+  (:require [mount.core :as mount]
+            [middlepack-adapter.models.dbpedia :as dbpedia]
             [middlepack-adapter.models.wikidata :as wikidata])
   (:gen-class))
 
@@ -9,4 +10,6 @@
 
 (defn -main
   [& args]
-  (printVec (wikidata/get-static-types)))
+  (mount/start)
+  (printVec (wikidata/get-types 5)))
+

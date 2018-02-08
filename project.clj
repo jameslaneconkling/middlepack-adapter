@@ -5,7 +5,8 @@
                  #_[org.eclipse.rdf4j/rdf4j-repository-sail "2.2.4"]
                  #_[org.eclipse.rdf4j/rdf4j-sail-memory "2.2.4"]
 
-                 [grafter "0.8.12"]]
+                 [grafter "0.8.12"]
+                 [mount "0.1.11"]]
   :main ^:skip-aot middlepack-adapter.core
   :dev {:main user
         :source-paths ["dev"]}
