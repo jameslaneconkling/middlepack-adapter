@@ -1,6 +1,5 @@
 (ns middlepack-adapter.repository
   (:require [clojure.java.io :refer [file]]
-            [mount.core :refer [NotStartedState]]
             [grafter.rdf.repository :refer [ToConnection]])
   (:import [org.eclipse.rdf4j.repository Repository]
            [org.eclipse.rdf4j.repository.sail SailRepository]
@@ -42,4 +41,4 @@
 
 (defn initialized?
   [repo]
-  (not (instance? NotStartedState repo)))
+  (not (instance? mount.core.NotStartedState repo)))
