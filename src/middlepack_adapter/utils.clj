@@ -5,13 +5,15 @@
 (defn format-types-response [response]
   (->> response
        (map (comp
-             #(assoc % :label (get-in % [:label :value]))
-             #(rename-keys % {"class" :class "classLabel" :label})))
+             #(dissoc % :classLabel)
+             #(assoc % :class (.toString (% :class)))
+             #(assoc % :label (get-in % [:classLabel :string]))))
        (into [])))
 
 (defn format-properties-response [response]
   (->> response
        (map (comp
-             #(assoc % :label (get-in % [:label :value]))
-             #(rename-keys % {"property" :property "propertyLabel" :label})))
+             #(dissoc % :propertyLabel)
+             #(assoc % :property (.toString (% :property)))
+             #(assoc % :label (get-in % [:propertyLabel :string]))))
        (into [])))
