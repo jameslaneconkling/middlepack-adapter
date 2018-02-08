@@ -1,8 +1,11 @@
 (ns middlepack-adapter.models.wikidata-test
-  (:require [middlepack-adapter.models.wikidata :as wikidata]
+  (:require [mount.core :as mount]
+            [middlepack-adapter.models.wikidata :as wikidata]
             [clojure.test :refer [deftest
                                   testing
                                   is]]))
+
+(mount/start)
 
 (deftest wikidata-model
   (testing "wikidata get-properties"

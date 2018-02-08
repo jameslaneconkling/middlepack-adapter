@@ -1,9 +1,11 @@
 (ns middlepack-adapter.models.dbpedia-test
-  (:require [middlepack-adapter.models.dbpedia :as dbpedia]
+  (:require [mount.core :as mount]
+            [middlepack-adapter.models.dbpedia :as dbpedia]
             [clojure.test :refer [deftest
                                   testing
                                   is]]))
 
+(mount/start)
 
 (deftest dbpedia-model
   (testing "dbpedia get-types"
