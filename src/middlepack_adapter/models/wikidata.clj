@@ -1,31 +1,50 @@
 (ns middlepack-adapter.models.wikidata
-  (:require [yesparql.core :refer [defquery]]
+  (:require [mount.core :refer [defstate]]
+            [grafter.rdf.repository :refer [sparql-repo
+                                            shutdown]]
+            [grafter.rdf.sparql :refer [query]]
             [middlepack-adapter.utils :refer [format-types-response
-                                               format-properties-response]]))
+                                              format-properties-response]])
+  (:import [java.net URI]))
 
 
-(defquery get-types-query "sparql/wikidata/get-types.sparql"
-  {:connection  "https://query.wikidata.org/sparql"})
+(defstate wikidata-repo
+  :start (do
+           (println "initialize wikidata repository")
+           (sparql-repo "https://query.wikidata.org/sparql"))
+  :stop (do
+          (println "shut down wikidata repository")
+          (shutdown wikidata-repo)))
 
-(defquery get-properties-for-type-query "sparql/wikidata/get-properties-for-type.sparql"
-  {:connection  "https://query.wikidata.org/sparql"})
 
+;; see [List of Properties](https://www.wikidata.org/wiki/Wikidata:List_of_properties/all)
+;; for list of common classes, their properties, and property domain/ranges
+;; NOTE: using (wdt:P279)* [subclass] times out"
+(defn get-types
+  [limit]
+  (let [response (query "sparql/wikidata/get-types.sparql"
+                        {:limits limit}
+                        wikidata-repo)]
+    (format-types-response response)))
 
-(defn get-types [limit]
-  (with-open [result (get-types-query
-                      {:limit limit})]
-    (format-types-response result)))
 
 (defn get-static-types []
-  [{ :class "http://www.wikidata.org/entity/Q43229" :class-label "organization"}
-   { :class "http://www.wikidata.org/entity/Q783794" :class-label "company"}
-   { :class "http://www.wikidata.org/entity/Q215627" :class-label "person" }
-   { :class "http://www.wikidata.org/entity/Q1190554" :class-label "occurance" }
-   { :class "http://www.wikidata.org/entity/Q17334923" :class-label "location" }
-   { :class "http://www.wikidata.org/entity/Q386724" :class-label "work" }])
+  [{ :class "http://www.wikidata.org/entity/Q43229" :label "organization"}
+   { :class "http://www.wikidata.org/entity/Q783794" :label "company"}
+   { :class "http://www.wikidata.org/entity/Q215627" :label "person" }
+   { :class "http://www.wikidata.org/entity/Q1190554" :label "occurance" }
+   { :class "http://www.wikidata.org/entity/Q17334923" :label "location" }
+   { :class "http://www.wikidata.org/entity/Q386724" :label "work" }])
 
-(defn get-properties-for-type [type limit]
-  (with-open [result (get-properties-for-type-query
-                      {:limit limit
-                       :bindings {:type (java.net.URI. type)}})]
-    (format-properties-response result)))
+
+(defn get-properties-for-type
+  [type limit]
+  (let [response (query "sparql/wikidata/get-properties-for-type.sparql"
+                        {:limits limit
+                         :type (URI. type)}
+                        wikidata-repo)]
+    (format-properties-response response)))
+
+#_(count (get-properties-for-type
+          (:class (first (get-static-types)))
+          5))

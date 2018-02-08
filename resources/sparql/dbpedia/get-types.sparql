@@ -1,7 +1,3 @@
--- get types from dbpedia [search for subclass of Agent]
--- see [Ontology Classes](http://mappings.dbpedia.org/server/ontology/classes/) for list of classes, properties, and property domains/ranges
--- Endpoint: http://dbpedia.org/sparql
-
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?class ?classLabel
