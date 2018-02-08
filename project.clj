@@ -8,7 +8,6 @@
                  [grafter "0.8.12"]
                  [mount "0.1.11"]]
   :main ^:skip-aot middlepack-adapter.core
-  :dev {:main user
-        :source-paths ["dev"]}
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}
+             :dev {:source-paths ["src" "test" "dev"]}})
