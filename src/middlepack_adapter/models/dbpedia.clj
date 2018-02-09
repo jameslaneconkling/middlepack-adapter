@@ -47,7 +47,7 @@
 (defn get-properties-for-type-label
   [type-label limit]
   (when-let [type-uri (->> (get-static-types)
-                (filter #(= (:label %) type-label))
-                first
-                :class)]
+                           (filter #(= (:label %) type-label))
+                           first
+                           :class)]
     (get-properties-for-type type-uri limit)))
