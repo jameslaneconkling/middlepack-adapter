@@ -9,28 +9,37 @@
             [middlepack-adapter.models.wikidata :as wikidata]))
 
 
-(defn valid-repository [repository]
+(defn valid-repository? [repository]
   (some #(= repository %) ["dbpedia" "wikidata"]))
+
+(defn repository-type-handler
+  [repository]
+  (case repository
+    "dbpedia" (response (dbpedia/get-static-types))
+    "wikidata" (response (wikidata/get-static-types))
+    (not-found (response (:message "Repository Does Not Exist")))))
+
+
+(defn repository-type-properties-handler
+  [repository type-label]
+  (case repository
+    "dbpedia" (if-let [result (dbpedia/get-properties-for-type-label type-label 10)]
+                (response result)
+                (not-found (response {:message "Type Does Not Exist"})))
+    "wikidata" (if-let [result (wikidata/get-properties-for-type-label type-label 10)]
+                 (response result)
+                 (not-found (response {:message "Type Does Not Exist"})))
+    (not-found (response {:message "Repository Does Not Exist"}))))
 
 
 (defroutes app-routes
   (GET "/:repository/type"
        [repository]
-       (if-not (valid-repository repository)
-         (not-found (response (:message "Repository Does Not Exist")))
-         (response (dbpedia/get-static-types))))
+       (repository-type-handler repository))
   (GET "/:repository/properties/:type-label"
        [repository type-label]
        ;; TODO - validate repository in middleware
-       (let [type-uri (dbpedia/get-type-uri-from-label type-label)]
-         (cond
-           (not (valid-repository repository))
-           (not-found (response {:message "Repository Does Not Exist"}))
-           (nil? type-uri)
-           (not-found (response {:message "Type Does Not Exist"}))
-           :else (response (dbpedia/get-properties-for-type-label
-                            type-label
-                            10)))))
+       (repository-type-properties-handler repository type-label))
   (not-found (response {:message "Not Found"})))
 
 
