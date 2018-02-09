@@ -42,3 +42,10 @@
                          :type (URI. type)}
                         dbpedia-repo)]
     (format-properties-response response)))
+
+(defn get-type-uri-from-label
+  [type-label]
+  (->> (get-static-types)
+                     (filter #(= (:label %) type-label))
+                     first
+                     :class))
