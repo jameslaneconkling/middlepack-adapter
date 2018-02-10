@@ -65,7 +65,6 @@
                          :subj (URI. subject)
                          :pred (URI. predicate)} ; NOTE - predicate is a reserved word in grafter SPARQL bindings [why?]
                         dbpedia-repo)]
-    (println response)
     (format-triples-response subject predicate range response)))
 
 

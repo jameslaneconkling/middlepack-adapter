@@ -1,6 +1,9 @@
 (ns middlepack-adapter.utils
   (:require [middlepack-adapter.range :refer [range->list]]))
 
+(defn zipmap-all-vals
+  [keys vals]
+  (zipmap keys (concat vals (repeat (- (count keys) (count vals)) nil))))
 
 (defn format-types-response [response]
   (->> response
@@ -28,10 +31,13 @@
                      :label (get-in % [:objectLabel :string])
                      :subject subject
                      :predicate predicate)))
-       (zipmap (range->list range))))
+       (zipmap-all-vals (range->list range))))
 
 (defn unnest-range-set
   [{:keys [subject predicate ranges]}]
   (map #(hash-map :subject subject
                   :predicate predicate
                   :range %) ranges))
+
+
+#_(zipmap-all-vals [:a :b :c :d :e] [1 2 3 4 5 6])
