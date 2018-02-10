@@ -1,4 +1,5 @@
-(ns middlepack-adapter.utils)
+(ns middlepack-adapter.utils
+  (:require [middlepack-adapter.range :refer [range->list]]))
 
 
 (defn format-types-response [response]
@@ -18,7 +19,7 @@
        (into [])))
 
 (defn format-triples-response
-  [subject predicate response]
+  [subject predicate range response]
   (->> response
        (map (comp
              #(dissoc % :objectLabel)
@@ -27,4 +28,10 @@
                      :label (get-in % [:objectLabel :string])
                      :subject subject
                      :predicate predicate)))
-       (into [])))
+       (zipmap (range->list range))))
+
+(defn unnest-range-set
+  [{:keys [subject predicate ranges]}]
+  (map #(hash-map :subject subject
+                  :predicate predicate
+                  :range %) ranges))

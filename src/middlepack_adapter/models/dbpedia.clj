@@ -3,9 +3,11 @@
             [grafter.rdf.repository :refer [sparql-repo
                                             shutdown]]
             [grafter.rdf.sparql :as sparql :refer [query]]
+            [middlepack-adapter.range :refer [range->offset-limit]]
             [middlepack-adapter.utils :refer [format-types-response
                                               format-properties-response
-                                              format-triples-response]])
+                                              format-triples-response
+                                              unnest-range-set]])
   (:import [java.net URI]))
 
 
@@ -55,28 +57,20 @@
 
 
 (defn get-triple
-  [subject predicate range]
-  (let [response (query "sparql/dbpedia/get-triples.sparql"
-                        {::sparql/limits {:limit 10}
+  [{:keys [subject predicate range] :as triple}]
+  (let [{:keys [offset limit]} (range->offset-limit range)
+        response (query "sparql/dbpedia/get-triples.sparql"
+                        {::sparql/offsets {:offset offset}
+                         ::sparql/limits {:limit limit}
                          :subj (URI. subject)
-                         :pred (URI. predicate)}
+                         :pred (URI. predicate)} ; NOTE - predicate is a reserved word in grafter SPARQL bindings [why?]
                         dbpedia-repo)]
-    (format-triples-response subject predicate response)))
+    (println response)
+    (format-triples-response subject predicate range response)))
 
 
-(defn get-triples
-  [triples]
-  (pmap
-   (fn [{:keys [subject predicate range]}]
-     (get-triple subject predicate range))
-   triples))
-
-#_(def triples
-  [{:subject "http://dbpedia.org/resource/Lorine_Livington_Pruette"
-    :predicate "http://www.w3.org/2002/07/owl#sameAs"
-    :range {:to 5}}
-   {:subject "http://dbpedia.org/resource/William_Bagot,_2nd_Baron_Bagot"
-    :predicate "http://xmlns.com/foaf/0.1/depiction"
-    :range 0}])
-
-#_(get-triples triples)
+(def get-triples
+  (partial pmap #(->> %
+                      unnest-range-set
+                      (pmap get-triple)
+                      (into {}))))

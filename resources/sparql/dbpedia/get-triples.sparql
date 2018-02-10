@@ -11,4 +11,5 @@ WHERE {
     FILTER ( LANG(?objectLabel) = "en" )
   }
 }
+OFFSET ?offset
 LIMIT ?limit
