@@ -1,9 +1,9 @@
 (ns middlepack-adapter.range)
 
 (defprotocol IRange
-  "..."
-  (range->list [item] "...")
-  (range->offset-limit [item] "..."))
+  "Represents a contiguous range of integer numbers of length 1+"
+  (range->list [item] "Convert range to a list of integers")
+  (range->offset-limit [item] "Convert range to hashmap of offset/limit values for use in a SQL or SPARQL query"))
 
 
 (extend-protocol IRange
