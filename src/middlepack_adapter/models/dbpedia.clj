@@ -54,17 +54,29 @@
     (get-properties-for-type type-uri limit)))
 
 
-
-(defn get-triples
-  [subject predicate limit]
+(defn get-triple
+  [subject predicate range]
   (let [response (query "sparql/dbpedia/get-triples.sparql"
-                        {::sparql/limits {:limit limit}
+                        {::sparql/limits {:limit 10}
                          :subj (URI. subject)
                          :pred (URI. predicate)}
                         dbpedia-repo)]
     (format-triples-response subject predicate response)))
 
-(get-triples
- "http://dbpedia.org/resource/Lorine_Livington_Pruette"
- "http://www.w3.org/2002/07/owl#sameAs"
-  20)
+
+(defn get-triples
+  [triples]
+  (map
+   (fn [{:keys [subject predicate range]}]
+     (get-triple subject predicate range))
+   triples))
+
+#_(def triples
+  [{:subject "http://dbpedia.org/resource/Lorine_Livington_Pruette"
+    :predicate "http://www.w3.org/2002/07/owl#sameAs"
+    :range {:to 5}}
+   {:subject "http://dbpedia.org/resource/William_Bagot,_2nd_Baron_Bagot"
+    :predicate "http://xmlns.com/foaf/0.1/depiction"
+    :range 0}])
+
+#_(get-triples triples)

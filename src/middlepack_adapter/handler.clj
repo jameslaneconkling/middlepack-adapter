@@ -33,12 +33,11 @@
 
 
 (defn triple-handler
-  [repository subject prediate]
+  [repository triples]
+  (println (-> triples first))
   (case repository
-    "dbpedia" (response (dbpedia/get-triples
-                         "http://dbpedia.org/resource/Lorine_Livington_Pruette"
-                         "http://www.w3.org/2002/07/owl#sameAs"
-                         10))
+    "dbpedia" (response (dbpedia/get-triples triples))
+    "wikidata" (response (dbpedia/get-triples triples))
     (not-found (response {:message "Repository Does Not Exist"}))))
 
 
@@ -50,9 +49,9 @@
        [repository type-label]
        ;; TODO - validate repository in middleware
        (properties-handler repository type-label))
-  (GET "/:repository/fact/:subject/:predicate"
-       [repository subject predicate]
-       (triple-handler repository subject predicate))
+  (POST "/:repository/facts"
+        [repository :as {:keys [body]}]
+        (triple-handler repository body))
   (not-found (response {:message "Not Found"})))
 
 
@@ -61,5 +60,6 @@
     (mount/start)
     (-> app-routes
         wrap-json-response
-        wrap-json-body
-        (wrap-defaults site-defaults))))
+        (wrap-json-body {:keywords? true})
+        ;; disable CSRF protection
+        (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false)))))
