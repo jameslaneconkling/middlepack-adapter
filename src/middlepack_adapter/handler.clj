@@ -34,7 +34,6 @@
 
 (defn triple-handler
   [repository triples]
-  (println (-> triples first))
   (case repository
     "dbpedia" (response (dbpedia/get-triples triples))
     "wikidata" (response (dbpedia/get-triples triples))

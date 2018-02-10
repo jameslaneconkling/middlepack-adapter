@@ -66,7 +66,7 @@
 
 (defn get-triples
   [triples]
-  (map
+  (pmap
    (fn [{:keys [subject predicate range]}]
      (get-triple subject predicate range))
    triples))
