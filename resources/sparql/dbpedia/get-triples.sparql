@@ -1,0 +1,14 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?object ?objectLabel
+WHERE {
+  ?subj ?pred ?object .
+
+  FILTER ( !isLiteral(?object) || LANG(?object) = "en" || LANG(?object) = "")
+
+  OPTIONAL {
+    ?object rdfs:label ?objectLabel .
+    FILTER ( LANG(?objectLabel) = "en" )
+  }
+}
+LIMIT ?limit

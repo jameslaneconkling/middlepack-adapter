@@ -4,7 +4,8 @@
                                             shutdown]]
             [grafter.rdf.sparql :as sparql :refer [query]]
             [middlepack-adapter.utils :refer [format-types-response
-                                              format-properties-response]])
+                                              format-properties-response
+                                              format-triples-response]])
   (:import [java.net URI]))
 
 
@@ -51,3 +52,19 @@
                            first
                            :class)]
     (get-properties-for-type type-uri limit)))
+
+
+
+(defn get-triples
+  [subject predicate limit]
+  (let [response (query "sparql/dbpedia/get-triples.sparql"
+                        {::sparql/limits {:limit limit}
+                         :subj (URI. subject)
+                         :pred (URI. predicate)}
+                        dbpedia-repo)]
+    (format-triples-response subject predicate response)))
+
+(get-triples
+ "http://dbpedia.org/resource/Lorine_Livington_Pruette"
+ "http://www.w3.org/2002/07/owl#sameAs"
+  20)

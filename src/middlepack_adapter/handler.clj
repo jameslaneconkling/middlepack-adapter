@@ -12,7 +12,7 @@
 (defn valid-repository? [repository]
   (some #(= repository %) ["dbpedia" "wikidata"]))
 
-(defn repository-type-handler
+(defn type-handler
   [repository]
   (case repository
     "dbpedia" (response (dbpedia/get-static-types))
@@ -20,7 +20,7 @@
     (not-found (response (:message "Repository Does Not Exist")))))
 
 
-(defn repository-type-properties-handler
+(defn properties-handler
   [repository type-label]
   (case repository
     "dbpedia" (if-let [result (dbpedia/get-properties-for-type-label type-label 10)]
@@ -32,14 +32,27 @@
     (not-found (response {:message "Repository Does Not Exist"}))))
 
 
+(defn triple-handler
+  [repository subject prediate]
+  (case repository
+    "dbpedia" (response (dbpedia/get-triples
+                         "http://dbpedia.org/resource/Lorine_Livington_Pruette"
+                         "http://www.w3.org/2002/07/owl#sameAs"
+                         10))
+    (not-found (response {:message "Repository Does Not Exist"}))))
+
+
 (defroutes app-routes
   (GET "/:repository/type"
        [repository]
-       (repository-type-handler repository))
+       (type-handler repository))
   (GET "/:repository/properties/:type-label"
        [repository type-label]
        ;; TODO - validate repository in middleware
-       (repository-type-properties-handler repository type-label))
+       (properties-handler repository type-label))
+  (GET "/:repository/fact/:subject/:predicate"
+       [repository subject predicate]
+       (triple-handler repository subject predicate))
   (not-found (response {:message "Not Found"})))
 
 
