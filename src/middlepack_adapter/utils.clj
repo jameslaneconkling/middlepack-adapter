@@ -5,7 +5,8 @@
   [keys vals]
   (zipmap keys (concat vals (repeat (- (count keys) (count vals)) nil))))
 
-(defn format-types-response [response]
+(defn format-types-response
+  [response]
   (->> response
        (map (comp
              #(dissoc % :classLabel)
@@ -13,7 +14,8 @@
              #(assoc % :label (get-in % [:classLabel :string]))))
        (into [])))
 
-(defn format-properties-response [response]
+(defn format-properties-response
+  [response]
   (->> response
        (map (comp
              #(dissoc % :propertyLabel)
@@ -33,11 +35,17 @@
                      :predicate predicate)))
        (zipmap-all-vals (range->list range))))
 
+(defn format-search-response
+  [response]
+  (->> response
+       (map (comp
+             #(dissoc % :subjectLabel)
+             #(assoc %
+                     :subject (.toString (% :subject))
+                     :label (get-in % [:subjectLabel :string]))))))
+
 (defn unnest-range-set
   [{:keys [subject predicate ranges]}]
   (map #(hash-map :subject subject
                   :predicate predicate
                   :range %) ranges))
-
-
-#_(zipmap-all-vals [:a :b :c :d :e] [1 2 3 4 5 6])

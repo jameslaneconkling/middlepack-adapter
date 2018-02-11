@@ -7,6 +7,7 @@
             [middlepack-adapter.utils :refer [format-types-response
                                               format-properties-response
                                               format-triples-response
+                                              format-search-response
                                               unnest-range-set]])
   (:import [java.net URI]))
 
@@ -73,3 +74,20 @@
                       unnest-range-set
                       (pmap get-triple)
                       (into {}))))
+
+(defn get-search-for-range
+  [type range]
+  (let [{:keys [offset limit]} (range->offset-limit range)
+        response (query "sparql/dbpedia/get-search.sparql"
+                        {::sparql/offsets {:offset offset}
+                         ::sparql/limits {:limit limit}
+                         :type (URI. type)}
+                        dbpedia-repo)]
+    (format-search-response response)))
+
+
+(defn get-search
+  [{:keys [type ranges]}]
+  (->> ranges
+       (pmap (partial get-search-for-range type))
+       (apply concat)))

@@ -23,10 +23,10 @@
 (defn properties-handler
   [repository type-label]
   (case repository
-    "dbpedia" (if-let [result (dbpedia/get-properties-for-type-label type-label 10)]
+    "dbpedia" (if-let [result (dbpedia/get-properties-for-type-label type-label 100)]
                 (response result)
                 (not-found (response {:message "Type Does Not Exist"})))
-    "wikidata" (if-let [result (wikidata/get-properties-for-type-label type-label 10)]
+    "wikidata" (if-let [result (wikidata/get-properties-for-type-label type-label 100)]
                  (response result)
                  (not-found (response {:message "Type Does Not Exist"})))
     (not-found (response {:message "Repository Does Not Exist"}))))
@@ -36,7 +36,13 @@
   [repository triples]
   (case repository
     "dbpedia" (response (dbpedia/get-triples triples))
-    "wikidata" (response (dbpedia/get-triples triples))
+    (not-found (response {:message "Repository Does Not Exist"}))))
+
+
+(defn search-handler
+  [repository search]
+  (case repository
+    "dbpedia" (response (dbpedia/get-search search))
     (not-found (response {:message "Repository Does Not Exist"}))))
 
 
@@ -51,6 +57,9 @@
   (POST "/:repository/facts"
         [repository :as {:keys [body]}]
         (triple-handler repository body))
+  (POST "/:repository/search"
+        [repository :as {:keys [body]}]
+        (search-handler repository body))
   (not-found (response {:message "Not Found"})))
 
 

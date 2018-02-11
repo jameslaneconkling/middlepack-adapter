@@ -1,0 +1,11 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?subject ?subjectLabel
+WHERE {
+  ?subject rdf:type ?type .
+  ?subject rdfs:label ?subjectLabel
+  FILTER (LANG(?subjectLabel) = "en" || LANG(?subjectLabel) = "")
+}
+OFFSET ?offset
+LIMIT ?limit
