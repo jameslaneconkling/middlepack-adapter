@@ -41,7 +41,7 @@
 
 
 (defroutes app-routes
-  (GET "/:repository/type"
+  (GET "/:repository/types"
        [repository]
        (type-handler repository))
   (GET "/:repository/properties/:type-label"
