@@ -7,6 +7,8 @@ Middleware adapter for [Wikidata](https://query.wikidata.org/) and [DBPedia](htt
 
 ```bash
 lein run
+
+lein ring server-headless
 ```
 
 
