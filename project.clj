@@ -9,7 +9,8 @@
                  [grafter "0.8.12"]
                  [compojure "1.6.0"]
                  [ring/ring-defaults "0.2.1"]
-                 [mount "0.1.11"]]
+                 [mount "0.1.11"]
+                 [ring/ring-json "0.4.0"]]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler middlepack-adapter.handler/app
          :nrepl {:start? true
@@ -17,5 +18,4 @@
   :target-path "target/%s"
   :profiles {:dev {:source-paths ["src" "test" "dev"]
                    :dependencies [[javax.servlet/servlet-api "2.5"]
-                                  [ring/ring-mock "0.3.0"]
-                                  [ring/ring-json "0.4.0"]]}})
+                                  [ring/ring-mock "0.3.0"]]}})
