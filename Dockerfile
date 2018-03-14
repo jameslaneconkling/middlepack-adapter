@@ -8,7 +8,6 @@ RUN lein deps
 
 COPY . /usr/src/app
 
-# CMD ["lein", "ring", "server-headless"]
 RUN mv "$(lein ring uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
 
 CMD ["java", "-jar", "app-standalone.jar"]
