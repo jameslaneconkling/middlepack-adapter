@@ -69,11 +69,13 @@
     (format-triples-response subject predicate range response)))
 
 
-(def get-triples
-  (partial pmap #(->> %
-                      unnest-range-set
-                      (pmap get-triple)
-                      (into {}))))
+(defn get-triples
+  [triples]
+  (->> triples
+       (mapcat unnest-range-set)
+       (pmap get-triple)
+       flatten))
+
 
 (defn get-search-for-range
   [type range]

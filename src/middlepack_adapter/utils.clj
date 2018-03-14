@@ -1,9 +1,10 @@
 (ns middlepack-adapter.utils
   (:require [middlepack-adapter.range :refer [range->list]]))
 
-(defn zipmap-all-vals
-  [keys vals]
-  (zipmap keys (concat vals (repeat (- (count keys) (count vals)) nil))))
+
+(defn pad
+  [n coll val]
+  (take n (concat coll (repeat val))))
 
 (defn format-types-response
   [response]
@@ -25,15 +26,22 @@
 
 (defn format-triples-response
   [subject predicate range response]
-  (->> response
-       (map (comp
-             #(dissoc % :objectLabel)
-             #(assoc %
-                     :object (.toString (% :object))
-                     :label (get-in % [:objectLabel :string])
-                     :subject subject
-                     :predicate predicate)))
-       (zipmap-all-vals (range->list range))))
+  (let [indices (range->list range)
+        padded-response (pad (count indices) response nil)]
+    (map
+     (defn transform [response-triple, index]
+       (if (nil? response-triple)
+         {:subject subject :predicate predicate :index index}
+         ((comp
+           #(dissoc % :objectLabel)
+           #(assoc %
+                   :object (.toString (% :object))
+                   :label (get-in % [:objectLabel :string])
+                   :subject subject
+                   :predicate predicate
+                   :index index)) response-triple)))
+     padded-response
+     indices)))
 
 (defn format-search-response
   [response]
