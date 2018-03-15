@@ -85,7 +85,7 @@
                          ::sparql/limits {:limit limit}
                          :type (URI. type)}
                         dbpedia-repo)]
-    (format-search-response response)))
+    (format-search-response response range)))
 
 
 (defn get-search

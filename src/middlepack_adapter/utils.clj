@@ -29,7 +29,7 @@
   (let [indices (range->list range)
         padded-response (pad (count indices) response nil)]
     (map
-     (defn transform [response-triple, index]
+     (fn [response-triple, index]
        (if (nil? response-triple)
          {:subject subject :predicate predicate :index index}
          ((comp
@@ -44,13 +44,15 @@
      indices)))
 
 (defn format-search-response
-  [response]
-  (->> response
-       (map (comp
-             #(dissoc % :subjectLabel)
-             #(assoc %
-                     :subject (.toString (% :subject))
-                     :label (get-in % [:subjectLabel :string]))))))
+  [response range]
+  (let [indices (range->list range)]
+    (map (fn [triple index]
+           (-> triple
+               (assoc :subject (.toString (triple :subject))
+                      :label (get-in triple [:subjectLabel :string])
+                      :index index)
+               (dissoc :subjectLabel))) response indices)))
+
 
 (defn unnest-range-set
   [{:keys [subject predicate ranges]}]
