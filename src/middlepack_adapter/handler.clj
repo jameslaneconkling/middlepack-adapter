@@ -31,6 +31,16 @@
                  (not-found (response {:message "Type Does Not Exist"})))
     (not-found (response {:message "Repository Does Not Exist"}))))
 
+(defn type-properties-handler
+  [repository type]
+  (case repository
+    "dbpedia" (if-let [result (dbpedia/get-properties-for-type type 100)]
+                (response result)
+                (not-found (response {:message "Type Does Not Exist"})))
+    "wikidata" (if-let [result (wikidata/get-properties-for-type type 100)]
+                 (response result)
+                 (not-found (response {:message "Type Does Not Exist"})))
+    (not-found (response {:message "Repository Does Not Exist"}))))
 
 (defn triple-handler
   [repository triples]
@@ -54,6 +64,10 @@
        [repository type-label]
        ;; TODO - validate repository in middleware
        (properties-handler repository type-label))
+  (POST "/:repository/properties"
+        [repository :as {:keys [body]}]
+        ;; TODO - validate repository in middleware
+        (type-properties-handler repository (:type body)))
   (POST "/:repository/facts"
         [repository :as {:keys [body]}]
         (triple-handler repository body))
