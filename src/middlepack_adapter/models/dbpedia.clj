@@ -20,6 +20,12 @@
           (println "shut down dbpedia repository")
           (shutdown dbpedia-repo)))
 
+(defn inferPredicate
+  [predicate]
+  (case predicate
+    "http://www.w3.org/2004/02/skos/core#prefLabel" "http://www.w3.org/2000/01/rdf-schema#label"
+    predicate))
+
 ;; see [Ontology Classes](http://mappings.dbpedia.org/server/ontology/classes/)
 ;; for list of classes, properties, and property domains/ranges
 (defn get-types
@@ -60,11 +66,12 @@
 (defn get-triple
   [{:keys [subject predicate range] :as triple}]
   (let [{:keys [offset limit]} (range->offset-limit range)
+        inferredPredicate (inferPredicate predicate)
         response (query "sparql/dbpedia/get-triples.sparql"
                         {::sparql/offsets {:offset offset}
                          ::sparql/limits {:limit limit}
                          :subj (URI. subject)
-                         :pred (URI. predicate)} ; NOTE - predicate is a reserved word in grafter SPARQL bindings [why?]
+                         :pred (URI. inferredPredicate)} ; NOTE - predicate is a reserved word in grafter SPARQL bindings [why?]
                         dbpedia-repo)]
     (format-triples-response subject predicate range response)))
 
