@@ -10,6 +10,7 @@
                  [compojure "1.6.0"]
                  [ring/ring-defaults "0.2.1"]
                  [mount "0.1.11"]
+                 [ring-logger-timbre "0.7.6"]
                  [ring/ring-json "0.4.0"]]
   :plugins [[lein-ring "0.9.7"]]
   :ring {:handler middlepack-adapter.handler/app

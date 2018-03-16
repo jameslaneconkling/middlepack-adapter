@@ -6,6 +6,7 @@
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
             [ring.util.response :refer [response]]
+            [ring.logger.timbre :refer [wrap-with-logger]]
             [middlepack-adapter.models.dbpedia :as dbpedia]
             [middlepack-adapter.models.wikidata :as wikidata]))
 
@@ -84,15 +85,13 @@
     (try
       (handler request)
       (catch Exception e
-        (do
-          (println e)
-          {:status 500 :body (:cause (Throwable->map e))})))))
+        {:status 500 :body (:cause (Throwable->map e))}))))
 
 (def app
   (do
     (mount/start)
     (-> app-routes
-        #_(handler/api app-routes)
+        wrap-with-logger
         wrap-json-response
         (wrap-json-body {:keywords? true})
         ;; disable CSRF protection
