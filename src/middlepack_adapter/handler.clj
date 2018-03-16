@@ -1,6 +1,7 @@
 (ns middlepack-adapter.handler
   (:require [mount.core :as mount]
             [compojure.core :refer :all]
+            [compojure.handler :as handler]
             [compojure.route :refer [not-found]]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
             [ring.middleware.json :refer [wrap-json-response wrap-json-body]]
@@ -77,11 +78,23 @@
   (not-found (response {:message "Not Found"})))
 
 
+(defn wrap-exception-handling
+  [handler]
+  (fn [request]
+    (try
+      (handler request)
+      (catch Exception e
+        (do
+          (println e)
+          {:status 500 :body (:cause (Throwable->map e))})))))
+
 (def app
   (do
     (mount/start)
     (-> app-routes
+        #_(handler/api app-routes)
         wrap-json-response
         (wrap-json-body {:keywords? true})
         ;; disable CSRF protection
-        (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false)))))
+        (wrap-defaults (assoc-in site-defaults [:security :anti-forgery] false))
+        wrap-exception-handling)))
