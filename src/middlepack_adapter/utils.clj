@@ -1,5 +1,21 @@
 (ns middlepack-adapter.utils
-  (:require [middlepack-adapter.range :refer [range->list]]))
+  (:require [middlepack-adapter.range :refer [range->list]]
+            [grafter.rdf.protocols :as protocols :refer [raw-value
+                                                         #_LangString]])
+  (:import [java.net URI]
+           [grafter.rdf.protocols LangString]))
+
+
+(defprotocol TripleObject
+  (stringify [this]))
+
+(extend-protocol TripleObject
+  URI
+  (stringify [this] (.toString this))
+  LangString
+  (stringify [this] (str "\"" (raw-value this) "\""))
+  Object
+  (stringify [this] (.toString this)))
 
 
 (defn pad
@@ -35,8 +51,8 @@
          ((comp
            #(dissoc % :objectLabel)
            #(assoc %
-                   :object (.toString (% :object))
-                   :label (get-in % [:objectLabel :string])
+                   :object (stringify (% :object))
+                   :label (raw-value (:objectLabel %))
                    :subject subject
                    :predicate predicate
                    :index index)) response-triple)))
