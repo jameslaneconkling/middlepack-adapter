@@ -22,7 +22,7 @@ $ java -jar middlepack-adapter-0.1.0-standalone.jar
 ## Dockerize
 ```bash
 # build
-docker build middlepack-adapter:latest .
+docker build -t middlepack-adapter:latest .
 
 # run
 docker run --name middlepack-adapter -p 3030:3000 -d middlepack-adapter
